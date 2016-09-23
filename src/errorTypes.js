@@ -120,9 +120,25 @@ ErrorsInArrayElementsError.prototype = Object.create(DataTypeValidationError.pro
 ErrorsInArrayElementsError.prototype.constructor = ErrorsInArrayElementsError;
 exports.ErrorsInArrayElementsError = ErrorsInArrayElementsError;
 
+function ArrayHasTooFewItemsError(length, minItems){
+  this.name = 'ArrayHasTooFewItemsError';
+  this.message = 'minimum ' + minItems + ' item(s), ' + length + ' is too few';
+}
+ArrayHasTooFewItemsError.prototype = Object.create(DataTypeValidationError.prototype);
+ArrayHasTooFewItemsError.prototype.constructor = ArrayHasTooFewItemsError;
+exports.ArrayHasTooFewItemsError = ArrayHasTooFewItemsError;
+
+function ArrayHasTooManyItemsError(length, maxItems){
+  this.name = 'ArrayHasTooManyItemsError';
+  this.message = 'maximum ' + maxItems + ' item(s), ' + length + ' is too many';
+}
+ArrayHasTooManyItemsError.prototype = Object.create(DataTypeValidationError.prototype);
+ArrayHasTooManyItemsError.prototype.constructor = ArrayHasTooManyItemsError;
+exports.ArrayHasTooManyItemsError = ArrayHasTooManyItemsError;
+
 function MissingValueError(){
   this.name = 'MissingValueError';
-  
+
   this.message = 'This value is required but missing';
 }
 MissingValueError.prototype = Object.create(DataTypeValidationError.prototype);
