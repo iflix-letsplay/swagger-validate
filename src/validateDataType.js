@@ -1,9 +1,16 @@
 'use strict';
 
 var validate = require('./index');
+var hooksHelper = require('./hooks');
 
-function validateDataType(candidate, dataType, models){
+function validateDataType(candidate, dataType, models, dataPath, hooks){
+  // console.log('** ', dataPath);
   models = models || {};
+  hooks = hooks || {};
+
+  var matchingHooks = hooksHelper.matchingHooks(hooks, dataPath)
+  hooksHelper.runHooks(matchingHooks, 'beforeValidate', candidate, dataType, models, dataPath);
+  // afterValidate is a bit trickier, need to change all the returns to save to a var and return at the end
 
   var type = dataType.type || dataType.dataType || dataType.$ref;
 
@@ -17,14 +24,14 @@ function validateDataType(candidate, dataType, models){
     case 'boolean':
       return validate.primitive.boolean(candidate);
     case 'array':
-      return validate.array(candidate, dataType, models);
+      return validate.array(candidate, dataType, models, dataPath, hooks);
     case 'void':
       return validate.primitive.void(candidate);
     case 'File':
       return validate.primitive.file();
     case 'object':
       if (dataType.properties) {
-        return validate.model(candidate, dataType.properties, models)
+        return validate.model(candidate, dataType.properties, models, dataPath, hooks);
       }
       // intentionally fall through to default here so explicit `type: object`
       // with $ref would be validated as well
@@ -32,7 +39,9 @@ function validateDataType(candidate, dataType, models){
       // Assumed to be object
       var model = models[type];
       if (model) {
-        return validate.model(candidate, model, models);
+        return validate.model(candidate, model, models, dataPath, hooks);
+      } else {
+        hooksHelper.runHooks(matchingHooks, 'unvalidated', candidate, dataType, models, dataPath);
       }
   }
 }

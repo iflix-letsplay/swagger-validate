@@ -3,6 +3,8 @@
 var errorTypes = require('./errorTypes'),
   validate = require('./index');
 
+var hooksHelper = require('./hooks');
+
 function duplicates(candidate) {
   var dupeCheck = [];
   return candidate.filter(function(value){
@@ -21,7 +23,7 @@ function duplicates(candidate) {
   });
 }
 
-function validateArray(candidate, dataType, models){
+function validateArray(candidate, dataType, models, dataPath, hooks){
   if(!Array.isArray(candidate)){
     return new errorTypes.NotAnArrayError(candidate, typeof candidate);
   }
@@ -51,8 +53,11 @@ function validateArray(candidate, dataType, models){
 
   if(items.$ref){
     var model = models[items.$ref];
-    errors = candidate.filter(function(value){
-      return validate.model(value, model, models);
+    errors = candidate.filter(function(value, index){
+      var itemPath = dataPath + '[' + index.toString() + ']';
+      var matchingHooks = hooksHelper.matchingHooks(hooks, itemPath);
+      hooksHelper.runHooks(matchingHooks, 'beforeValidate', value, model, models, itemPath);
+      return validate.model(value, model, models, itemPath);
     });
   } else {
     errors = candidate.filter(function(value){
