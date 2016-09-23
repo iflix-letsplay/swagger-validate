@@ -91,7 +91,7 @@ exports.NotVoidError = NotVoidError;
 
 function NotAStringError(value, actualType){
   this.name = 'NotAStringError';
-  this.message = '"' + value + '" is not a string';
+  this.message = '`' + value + '` is not a string';
   if(actualType) this.message += ' (got a ' + actualType + ' instead)';
 
   this.value = value;
@@ -103,7 +103,7 @@ exports.NotAStringError = NotAStringError;
 function StringNotInEnumError(value, acceptableValues){
   this.name = 'StringNotInEnumError';
   this.message = '"' + value + '" is not an acceptable value: "' + acceptableValues.join('", "') + '"';
- 
+
   this.value = value;
 }
 StringNotInEnumError.prototype = Object.create(DataTypeValidationError.prototype);
@@ -149,11 +149,17 @@ function ValidationErrors(value, specName, spec, errors){
   this.spec = spec;
   this.errors = errors || [];
 
-  this.message = specName + ' is invalid';
+  var messages = []
+
+  if (specName) {
+    messages.push(this.specName + ' is invalid');
+  }
 
   if(this.errors.length){
-    this.message += ':\n\t' + this.errors.map(function(e){ return e.message; }).join('\n\t');
+    messages.push(this.errors.map(function(e){ return e.message; }).join('\n\t'))
   }
+
+  this.message = "\n\t" + messages.join("\n\t") + "\n"
 }
 ValidationErrors.prototype = Object.create(DataTypeValidationError.prototype);
 ValidationErrors.prototype.constructor = ValidationErrors;
