@@ -1,10 +1,10 @@
 'use strict';
 
 var validate = require('./index');
-  
+
 function validateDataType(candidate, dataType, models){
   models = models || {};
-      
+
   var type = dataType.type || dataType.dataType || dataType.$ref;
 
   switch(type){
@@ -23,9 +23,11 @@ function validateDataType(candidate, dataType, models){
     case 'File':
       return validate.primitive.file();
     default:
-      // Assumed to be complex model
+      // Assumed to be object
       var model = models[type];
-      return validate.model(candidate, model, models);
+      if (model) {
+        return validate.model(candidate, model, models);
+      }
   }
 }
 module.exports = validateDataType;
