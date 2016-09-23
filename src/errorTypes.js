@@ -59,7 +59,7 @@ exports.NotABooleanError = NotABooleanError;
 
 function NotAnArrayError(value, actualType){
   this.name = 'NotAnArrayError';
-  this.message = '"' + value + '" is not an array';
+  this.message = '`' + value + '` is not an array';
   if(actualType) this.message += ' (got a ' + actualType + ' instead)';
 
   this.value = value;
@@ -80,7 +80,7 @@ exports.DuplicateInSetError = DuplicateInSetError;
 
 function NotVoidError(value, actualType){
   this.name = 'NotVoidError';
-  this.message = '"' + value + '" is not null or undefined';
+  this.message = '`' + value + '` is not null or undefined';
   if(actualType) this.message += ' (got a ' + actualType + ' instead)';
 
   this.value = value;
@@ -102,7 +102,7 @@ exports.NotAStringError = NotAStringError;
 
 function StringNotInEnumError(value, acceptableValues){
   this.name = 'StringNotInEnumError';
-  this.message = '"' + value + '" is not an acceptable value: "' + acceptableValues.join('", "') + '"';
+  this.message = '`' + value + '` is not an acceptable value: "' + acceptableValues.join('", "') + '"';
 
   this.value = value;
 }
@@ -151,7 +151,7 @@ function ValidationError(specName, spec, error){
   this.spec = spec;
   this.error = error;
 
-  this.message = specName + ' is invalid: ' + error.message;
+  this.message = '`' + specName + '` is invalid: ' + error.message;
 }
 ValidationError.prototype = Object.create(DataTypeValidationError.prototype);
 ValidationError.prototype.constructor = ValidationError;
@@ -168,7 +168,7 @@ function ValidationErrors(value, specName, spec, errors){
   var messages = []
 
   if (specName) {
-    messages.push(this.specName + ' is invalid');
+    messages.push('`' + this.specName + '` is invalid');
   }
 
   if(this.errors.length){
