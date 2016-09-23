@@ -22,6 +22,12 @@ function validateDataType(candidate, dataType, models){
       return validate.primitive.void(candidate);
     case 'File':
       return validate.primitive.file();
+    case 'object':
+      if (dataType.properties) {
+        return validate.model(candidate, dataType.properties, models)
+      }
+      // intentionally fall through to default here so explicit `type: object`
+      // with $ref would be validated as well
     default:
       // Assumed to be object
       var model = models[type];
