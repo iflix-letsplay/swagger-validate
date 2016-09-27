@@ -31,7 +31,7 @@ function validateDataType(candidate, dataType, models, dataPath, hooks){
       return validate.primitive.file();
     case 'object':
       if (dataType.properties) {
-        return validate.model(candidate, dataType.properties, models, dataPath, hooks);
+        return validate.model(candidate, dataType, models, dataPath, hooks);
       }
       // intentionally fall through to default here so explicit `type: object`
       // with $ref would be validated as well
