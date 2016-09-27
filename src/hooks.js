@@ -1,18 +1,18 @@
 var pathMatchesPattern = require('./dataPaths').pathMatchesPattern;
 
 function runHooks(hooks, eventName, candidate, dataType, models, dataPath) {
-  Object.keys(hooks).forEach(function (pattern) {
+  return Object.keys(hooks).map(function (pattern) {
     var currentHooks = hooks[pattern];
     if (!currentHooks) return;
     var hooksForEvent = currentHooks[eventName];
     if (!hooksForEvent) return;
-    if (hooksForEvent.forEach) {
-      hooksForEvent.forEach(function (hook) {
-        hook.call(null, candidate, dataType, models, dataPath);
+    if (hooksForEvent.map) {
+      return hooksForEvent.map(function (hook) {
+        return hook.call(null, candidate, dataType, models, dataPath);
       });
     } else {
       var hook = hooksForEvent;
-      hook.call(null, candidate, dataType, models, dataPath);
+      return [hook.call(null, candidate, dataType, models, dataPath)];
     }
   })
 }
